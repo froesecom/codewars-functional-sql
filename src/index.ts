@@ -2,6 +2,13 @@
 
 export type QueryData = any[]
 
+export class QueryError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'QueryError'
+  }
+}
+
 export class Query {
   private _data: QueryData | null = null
   set data(data: QueryData) {
@@ -9,7 +16,9 @@ export class Query {
   }
 
   from(data: QueryData): void {
-    // raise error if already called
+    if (this._data) {
+      throw new QueryError('FROM called more than once')
+    }
     this.data = data
   }
 
@@ -17,6 +26,7 @@ export class Query {
     return this.data
   }
 }
+
 const sqlQuery = new Query()
 
 export function query(): any {
@@ -35,8 +45,9 @@ export function query(): any {
     },
   }
 }
-console.log(
-  query()
-    .from([1])
-    .execute()
-)
+
+// console.log(
+//   query()
+//     .from([1])
+//     .execute()
+// )
