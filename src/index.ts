@@ -1,7 +1,12 @@
-type QueryData = any[]
+// NOTE: All code in one file because the codewars GUID can't import multiple files
 
-class Query {
-  data: QueryData | null = null
+export type QueryData = any[]
+
+export class Query {
+  private _data: QueryData | null = null
+  set data(data: QueryData) {
+    this._data = data
+  }
 
   from(data: QueryData): void {
     // raise error if already called
