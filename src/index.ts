@@ -44,12 +44,21 @@ export class Query {
   }
 }
 
+interface QueryWrapper {
+  from: Function
+  select: Function
+  execute: Function
+}
+
 export function query(): any {
   const sqlQuery = new Query()
 
   return {
-    // select: () => (1),
-    from: function(data: QueryData): void {
+    select: function(selector?: Function): QueryWrapper {
+      sqlQuery.select(selector)
+      return this
+    },
+    from: function(data: QueryData): QueryWrapper {
       sqlQuery.from(data)
       return this
     },
@@ -66,5 +75,6 @@ export function query(): any {
 // console.log(
 //   query()
 //     .from([1])
+//     .select(() => {})
 //     .execute()
 // )
