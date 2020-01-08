@@ -11,8 +11,14 @@ export class QueryError extends Error {
 
 export class Query {
   private _data: QueryData | null = null
+  private _selector: Function | null = null
+
   set data(data: QueryData) {
     this._data = data
+  }
+
+  set selector(selector: Function) {
+    this._selector = selector
   }
 
   from(data: QueryData): void {
@@ -22,8 +28,19 @@ export class Query {
     this.data = data
   }
 
-  call() {
-    return this.data
+  select(selector?: Function): void {
+    if (this._selector) {
+      throw new QueryError('SELECT called more than once')
+    } else if (selector) {
+      this.selector = selector
+    }
+  }
+
+  call(): QueryData | null {
+    // TODO: trigger the query
+    // iterate over the ._data once and run each of the where/select/clauses, etc in one pass
+    // then iterate again to group then maybe again to group... TBD
+    return this._data
   }
 }
 
