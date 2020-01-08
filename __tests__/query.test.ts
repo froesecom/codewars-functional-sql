@@ -1,4 +1,4 @@
-import { Query } from '../src/index'
+import { Query } from '../src/query'
 let query
 
 describe('Query', () => {
