@@ -6,6 +6,16 @@ describe('Query', () => {
     query = new Query()
   })
 
+  describe('#call()', () => {
+    const data = [{ value: 1 }, { value: 2 }]
+    it('applies the selector to each datum', () => {
+      const selector = datum => datum.value
+      query.from(data)
+      query.select(selector)
+      expect(query.call()).toEqual([1, 2])
+    })
+  })
+
   describe('#from()', () => {
     it('sets data', () => {
       const spy = jest.spyOn(query, 'data', 'set')

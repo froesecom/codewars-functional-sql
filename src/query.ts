@@ -38,6 +38,12 @@ export class Query {
     // TODO: trigger the query
     // iterate over the ._data once and run each of the where/select/clauses, etc in one pass
     // then iterate again to group then maybe again to group... TBD
-    return this._data
+    // WIP below
+    if (this._data && this._selector) {
+      // @ts-ignore
+      return this._data.map(item => this._selector(item))
+    } else {
+      return null
+    }
   }
 }
