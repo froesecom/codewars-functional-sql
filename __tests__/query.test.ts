@@ -24,11 +24,21 @@ describe('Query', () => {
 
   describe('#select()', () => {
     describe('given a function argument', () => {
-      // to it
+      it('sets the selector', () => {
+        const spy = jest.spyOn(query, 'selector', 'set')
+        query.select(() => {})
+        expect(spy).toHaveBeenCalled()
+        spy.mockRestore()
+      })
     })
 
     describe('not given a function argument', () => {
-      // to it
+      it('does not call the setter', () => {
+        const spy = jest.spyOn(query, 'selector', 'set')
+        query.select()
+        expect(spy).not.toHaveBeenCalled()
+        spy.mockRestore()
+      })
     })
 
     it('throws and exception if called more than once with an argument', () => {
