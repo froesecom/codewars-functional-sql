@@ -27,9 +27,9 @@ export class Query {
   }
 }
 
-const sqlQuery = new Query()
-
 export function query(): any {
+  const sqlQuery = new Query()
+
   return {
     // select: () => (1),
     from: function(data: QueryData): void {
