@@ -7,23 +7,39 @@ describe('Query', () => {
   })
 
   describe('#call()', () => {
-    const data = [{ value: 1 }, { value: 2 }]
     it('applies the selector to each datum', () => {
+      const data = [{ value: 1 }, { value: 2 }]
       const selector = datum => datum.value
       query.from(data)
       query.select(selector)
       expect(query.call()).toEqual([1, 2])
     })
 
-    it('filters data using where function', () => {
+    describe('where logic', () => {
+      const data = [
+        { value: 1, name: 'jane' },
+        { value: 1, name: 'bill' },
+        { value: 3, name: 'bill' },
+        { value: 3, name: 'jane' },
+      ]
       const nIsOne = item => item.value === 1
-      query.from(data)
-      query.where(nIsOne)
-      expect(query.call()).toEqual([{ value: 1 }])
-    })
+      const isBill = item => item.name === 'bill'
 
-    it('uses and logic for muliple where functions', () => {
-      //
+      it('filters data using where function', () => {
+        query.from(data)
+        query.where(nIsOne)
+        expect(query.call()).toEqual([
+          { value: 1, name: 'jane' },
+          { value: 1, name: 'bill' },
+        ])
+      })
+
+      it('uses "and" logic for muliple where functions', () => {
+        query.from(data)
+        query.where(nIsOne)
+        query.where(isBill)
+        expect(query.call()).toEqual([{ value: 1, name: 'bill' }])
+      })
     })
   })
 

@@ -65,10 +65,10 @@ export class Query {
     } else {
       return data.filter(item => {
         return this._whereFuncs.reduce(
-          (shouldFilter: boolean, filterFunction) => {
-            return shouldFilter ? shouldFilter : filterFunction(item)
+          (shouldSelect: boolean, filterFunction) => {
+            return shouldSelect === false ? shouldSelect : filterFunction(item)
           },
-          false
+          true
         )
       })
     }
