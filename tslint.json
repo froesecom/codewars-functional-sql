@@ -7,6 +7,14 @@
     "no-var-requires": false,
     "object-literal-sort-keys": false,
     "no-string-literal": false,
-    "indent": [ true, "spaces"]
+    "indent": [ true, "spaces"],
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-leading-underscore",
+        "allow-pascal-case"
+      ]
+    }
   }
 }

@@ -1,22 +1,24 @@
-export type QueryData = any[]
+import { QueryError } from './query_error'
+import { BoolFunc } from './types'
 
-export class QueryError extends Error {
-  constructor(message) {
-    super(message)
-    this.name = 'QueryError'
-  }
-}
+export type QueryData = any[]
 
 export class Query {
   private _data: QueryData | null = null
-  private _selector: Function | null = null
+  private _selector: (() => void) | null = null
+  private _whereFuncs: BoolFunc[] = []
 
-  set data(data: QueryData) {
-    this._data = data
-  }
-
-  set selector(selector: Function) {
-    this._selector = selector
+  call(): QueryData | null {
+    // TODO: trigger the query
+    // iterate over the ._data once and run each of the where/select/clauses, etc in one pass
+    // then iterate again to group then maybe again to group... TBD
+    // WIP below
+    if (this._data) {
+      // @ts-ignore
+      return this.runSelect(this.runWhere(this._data))
+    } else {
+      return null
+    }
   }
 
   from(data: QueryData): void {
@@ -26,7 +28,7 @@ export class Query {
     this.data = data
   }
 
-  select(selector?: Function): void {
+  select(selector?: () => void): void {
     if (this._selector) {
       throw new QueryError('SELECT called more than once')
     } else if (selector) {
@@ -34,16 +36,41 @@ export class Query {
     }
   }
 
-  call(): QueryData | null {
-    // TODO: trigger the query
-    // iterate over the ._data once and run each of the where/select/clauses, etc in one pass
-    // then iterate again to group then maybe again to group... TBD
-    // WIP below
-    if (this._data && this._selector) {
+  where(whereFunc?: BoolFunc): void {
+    if (whereFunc) {
+      this._whereFuncs.push(whereFunc)
+    }
+  }
+
+  private set data(data: QueryData) {
+    this._data = data
+  }
+
+  private set selector(selector: () => void) {
+    this._selector = selector
+  }
+
+  private runSelect(data: QueryData): QueryData {
+    if (this._selector) {
       // @ts-ignore
-      return this._data.map(item => this._selector(item))
+      return data.map(item => this._selector(item))
     } else {
-      return null
+      return data
+    }
+  }
+
+  private runWhere(data: QueryData): QueryData {
+    if (this._whereFuncs.length === 0) {
+      return data
+    } else {
+      return data.filter(item => {
+        return this._whereFuncs.reduce(
+          (shouldFilter: boolean, filterFunction) => {
+            return shouldFilter ? shouldFilter : filterFunction(item)
+          },
+          false
+        )
+      })
     }
   }
 }
