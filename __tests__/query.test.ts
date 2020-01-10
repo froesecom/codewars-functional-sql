@@ -14,6 +14,17 @@ describe('Query', () => {
       query.select(selector)
       expect(query.call()).toEqual([1, 2])
     })
+
+    it('filters data using where function', () => {
+      const nIsOne = item => item.value === 1
+      query.from(data)
+      query.where(nIsOne)
+      expect(query.call()).toEqual([{ value: 1 }])
+    })
+
+    it('uses and logic for muliple where functions', () => {
+      //
+    })
   })
 
   describe('#from()', () => {
